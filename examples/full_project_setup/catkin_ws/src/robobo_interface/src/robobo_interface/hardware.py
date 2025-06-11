@@ -440,15 +440,17 @@ class HardwareRobobo(IRobobo):
 
     def _irs_callback(self, ros_data: IRs) -> None:
         self._irs_values = [
-            ros_data.BackL.range,
-            ros_data.BackR.range,
-            ros_data.FrontL.range,
-            ros_data.FrontR.range,
-            ros_data.FrontC.range,
-            ros_data.FrontRR.range,
-            ros_data.BackC.range,
-            ros_data.FrontLL.range,
+    		ros_data.FrontLL.range,  # 0 - angled far left
+    		ros_data.FrontL.range,   # 1 - left
+    		ros_data.FrontC.range,   # 2 - center
+    		ros_data.FrontR.range,   # 3 - right
+    		ros_data.FrontRR.range,  # 4 - angled far right
+    		ros_data.BackL.range,    # 5 - back left
+    		ros_data.BackC.range,    # 6 - back center
+    		ros_data.BackR.range,    # 7 - back right
         ]
+        self._logger(f"[DEBUG] IR values (FL, L, C, R, FR, BL, BC, BR): {self._irs_values}")
+
 
     def _camera_callback_front(self, ros_data: CompressedImage):
         if self._receiving_image_front is None:

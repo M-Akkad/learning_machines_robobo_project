@@ -74,36 +74,49 @@ def run_all_actions(rob: IRobobo):
 
 def test_avoid_obstacles(rob: IRobobo):
     import rospy
+    import time
+    import json
+
     rospy.loginfo("Starting obstacle avoidance test")
 
     if isinstance(rob, SimulationRobobo):
-        rob.play_simulation()  # Start CoppeliaSim simulation
+        rob.play_simulation()
+
+    start_time = time.time()
+    ir_log = []
+    time_log = []
 
     try:
-        while not rospy.is_shutdown():
+        for _ in range(50):  # Run for 50 iterations
+            now = time.time() - start_time
             ir_values = rob.read_irs()
-            front_ir_values = ir_values[2:6]  # FrontL, FrontR, FrontC, FrontRR
+            rospy.loginfo(f"[DEBUG] IR values: {ir_values}")
 
-            print("Full IR values:", ir_values)
-            print("Front IR values:", front_ir_values)
+            ir_log.append(ir_values)
+            time_log.append(now)
 
-            obstacle_detected = any(
-                val is not None and val < 0.2 for val in front_ir_values
-            )
-            print("Obstacle detected?", obstacle_detected)
+            front_ir_values = ir_values[0:5]
+            obstacle_detected = any(val is not None and val > 25 for val in front_ir_values)
 
             if obstacle_detected:
                 rob.set_emotion(Emotion.SURPRISED)
                 rob.talk("Obstacle ahead!")
-                rob.move_blocking(-30, 30, 300)  # Turn in place
+                rob.move_blocking(-50, 50, 300)  # Turn in place
             else:
                 rob.set_emotion(Emotion.HAPPY)
-                rob.move_blocking(50, 50, 500)   # Move forward
+                rob.move_blocking(50, 50, 500)  # Move forward
 
     except KeyboardInterrupt:
         print("Stopped obstacle avoidance loop")
 
     if isinstance(rob, SimulationRobobo):
         rob.stop_simulation()
+
+    # Save logs
+    import os
+    print("Saving data to:", os.path.abspath("trial_1_data.json"))
+
+    with open("trial_1_data.json", "w") as f:
+        json.dump({"time": time_log, "ir": ir_log}, f)
 
 
