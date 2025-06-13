@@ -187,3 +187,4 @@ CoppeliaSim.tar.xz
 
 # macOS stuff
 .DS_Store
+/examples/full_project_setup/catkin_ws/src/code_adnan/

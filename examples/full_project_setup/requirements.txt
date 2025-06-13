@@ -4,3 +4,18 @@ coppeliasim-zmqremoteapi-client~=2.0
 
 numpy~=1.24
 opencv-python~=4.8
+matplotlib
+
+# PyTorch for CUDA 11.1 (compatible with RTX 3070)
+torch==1.8.1+cu111
+torchvision==0.9.1+cu111
+torchaudio==0.8.1
+
+# Additional ML libraries
+scikit-learn
+pandas
+seaborn
+optuna
+
+# PyTorch CUDA 11.1 index
+--extra-index-url https://download.pytorch.org/whl/cu111
